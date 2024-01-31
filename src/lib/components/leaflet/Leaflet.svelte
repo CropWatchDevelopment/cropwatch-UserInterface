@@ -6,6 +6,7 @@
 	export let bounds: L.LatLngBoundsExpression | undefined = undefined;
 	export let view: L.LatLngExpression | undefined = undefined;
 	export let zoom: number | undefined = undefined;
+	export let disableZoom: boolean = false;
 
 	let map: L.Map | undefined;
 	let mapElement: HTMLDivElement;
@@ -16,6 +17,14 @@
 			maxZoom: 20,
 			subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
 		}).addTo(map);
+
+		if (disableZoom) {
+			map.touchZoom.disable();
+			map.doubleClickZoom.disable();
+			map.scrollWheelZoom.disable();
+			map.boxZoom.disable();
+			map.keyboard.disable();
+		}
 	});
 
 	onDestroy(() => {
@@ -36,7 +45,7 @@
 	}
 </script>
 
-<div class="relative w-full h-full border-r-2" bind:this={mapElement}>
+<div class="relative w-full h-full" bind:this={mapElement}>
 	{#if map}
 		<slot />
 	{/if}
