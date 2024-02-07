@@ -1,7 +1,20 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import cropwatchWithText from '$lib/images/cropwatchText.png';
-	import { Switch, TextField } from 'svelte-ux';
+	import { Button, Switch, TextField } from 'svelte-ux';
+	import type { PageData } from './$types';
+	import { superForm } from 'sveltekit-superforms/client';
+
+	export let data: PageData;
+
+	// Client API:
+	const { form } = superForm(data.form);
+
+	let loggingIn: boolean = false;
+
+	const onLogin = async () => {
+		loggingIn = true;
+	};
 </script>
 
 <div id="login-background">
@@ -74,11 +87,13 @@
 					</div>
 
 					<div class="mt-5">
-						<button
-							on:click={() => {goto('/app')}}
-              type="button"
+						<Button
+							on:click={() => onLogin()}
+							disabled={loggingIn}
+							loading={loggingIn}
+							type="submit"
 							class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-							>Login</button
+							>Login</Button
 						>
 					</div>
 				</form>
