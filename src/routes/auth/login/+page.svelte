@@ -1,14 +1,19 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import cropwatchWithText from '$lib/images/cropwatchText.png';
-	import { Button, Switch, TextField } from 'svelte-ux';
+	import { Button, Switch, TextField, Tooltip } from 'svelte-ux';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms/client';
 
 	export let data: PageData;
+	$: console.log(data);
 
 	// Client API:
-	const { form } = superForm(data.form);
+	const { form } = superForm(data.form, {
+		onUpdated({ form }) {
+			debugger;
+		}
+	});
 
 	let loggingIn: boolean = false;
 
@@ -31,7 +36,7 @@
 					The login page prioritizes user security, offering a seamless experiance that ensures
 					quick and convienient access to the system's array of benifits.
 				</p>
-				<form class="" action="#" method="POST">
+				<form class="" action="?login" method="POST">
 					<div class="mb-3">
 						<label for="email" class="block text-sm font-medium leading-6 text-gray-900"
 							>Email address</label
@@ -42,6 +47,7 @@
 								id="email"
 								name="email"
 								type="email"
+								value={data.authCookie.email}
 								autocomplete="email"
 								required
 								on:change={(e) => console.log(e.detail)}
@@ -60,6 +66,7 @@
 								placeholder="****************"
 								name="password"
 								type="password"
+								value={data.authCookie.password}
 								autocomplete="current-password"
 								required
 							/>
@@ -68,13 +75,18 @@
 
 					<div class="flex items-center justify-between">
 						<div class="flex items-center">
-							<Switch
-								classes={{
-									switch: 'bg-white border-gray-400 data-[checked=true]:bg-blue-600',
-									toggle: 'data-[checked=false]:bg-blue-600 data-[checked=true]:bg-white'
-								}}
-							/>
-							<label for="remember" class="text-sm text-gray-900"> &nbsp; Remember me </label>
+							<Tooltip title="This feature is disabled, but will be activated soon!">
+								<Switch
+									name="rememberMe"
+									disabled
+									value={data.authCookie.rememberMe}
+									classes={{
+										switch: 'bg-white border-gray-400 data-[checked=true]:bg-blue-600',
+										toggle: 'data-[checked=false]:bg-blue-600 data-[checked=true]:bg-white'
+									}}
+								/>
+								<label for="remember" class="text-sm text-gray-900"> &nbsp; Remember me </label>
+							</Tooltip>
 						</div>
 
 						<div class="text-sm leading-6">
@@ -88,7 +100,9 @@
 
 					<div class="mt-5">
 						<Button
-							on:click={() => onLogin()}
+							on:click={() => {
+								onLogin();
+							}}
 							disabled={loggingIn}
 							loading={loggingIn}
 							type="submit"

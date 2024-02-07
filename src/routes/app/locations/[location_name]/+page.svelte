@@ -21,6 +21,7 @@
 	import L from 'leaflet';
     import cloud from '$lib/images/cloud.png';
 	import './cloud.css';
+	import Sunny from '$lib/components/weatherIcons/Sunny.svelte';
 
 	let bounds: L.LatLngBoundsExpression | undefined = undefined;
 	let view: L.LatLngExpression | undefined = [32.14088948246444, 131.3853159103882];
@@ -40,13 +41,14 @@
 <div class="relative mb-4 overflow-hidden">
     <img src={cloud} class="absolute opacity-50 z-10" style="left: 60%; top: -115%"  alt="cloud1" />
     <img src={cloud} class="absolute opacity-50 z-10 rotate-45" style="top: 70%; left: -80px" alt="cloud1" />
-    <div class="rounded-lg bg-blue-500/50 p-10 text-white">
+    <div class="rounded-3xl bg-blue-500/50 p-10 text-white">
 		<div>
 			<!-- <p class="text-white text-sm">Outside Weather</p> -->
 			<p class="text-white text-sm mb-5">{new Date().toLocaleTimeString()}</p>
 			<div class="grid grid-flow-row grid-cols-12 mt-1">
 				<div class="col-span-2 mb-5">
-					<div id="cloud" />
+					<!-- <div id="cloud" /> -->
+					<Sunny cloud1={true} cloud2={true} />
 				</div>
 				<div class="col-span-3">
 					<p class="text-5xl ml-2"><b>18°C</b></p>

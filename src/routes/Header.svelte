@@ -15,6 +15,12 @@
 		mdiTwitter
 	} from '@mdi/js';
 	import { goto } from '$app/navigation';
+	import { supabase } from '$lib/supabaseClient';
+
+	const logout = async () => {
+		await supabase.auth.signOut();
+		goto('/auth/login');
+	}
 </script>
 
 <AppBar class="bg-emerald-700 text-white elevation-10">
@@ -442,9 +448,7 @@
 						icon={mdiLock}
 						classes={{ root: 'p-4' }}
 						on:click={toggleOff}
-						on:click={() => {
-							goto('/auth/login');
-						}}>Logout</MenuItem
+						on:click={() => logout()}>Logout</MenuItem
 					>
 				</ResponsiveMenu>
 				<div class="grid grid-col grid-rows-2 mx-3">
