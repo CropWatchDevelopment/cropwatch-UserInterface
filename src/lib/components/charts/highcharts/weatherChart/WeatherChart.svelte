@@ -1,10 +1,13 @@
 <script lang="ts">
 	// import highcharts from '$lib/components/charts/highcharts/highcharts-action';
 	import Highcharts from 'highcharts';
-    import windbarb from 'highcharts/modules/windbarb';
-    import more from 'highcharts/highcharts-more';
-	import weatherData from './weather.json';
+	import windbarb from 'highcharts/modules/windbarb';
+	import more from 'highcharts/highcharts-more';
 	import { onMount } from 'svelte';
+	import { ProgressCircle } from 'svelte-ux';
+
+    export let WeatherJSON: any = null;
+	let isLoading: boolean = true;
 
 	function Meteogram(json, container) {
 		// Parallel arrays for the chart data, these are populated as the JSON file
@@ -329,7 +332,7 @@
 			},
 
 			title: {
-				text: 'Weather History chart',
+				text: '',
 				align: 'left',
 				style: {
 					whiteSpace: 'nowrap',
@@ -592,6 +595,7 @@
 	Meteogram.prototype.createChart = function () {
 		this.chart = new Highcharts.Chart(this.getChartOptions(), (chart) => {
 			this.onChartLoad(chart);
+			isLoading = false;
 		});
 	};
 
@@ -661,23 +665,11 @@
 	};
 	// End of the Meteogram protype
 
-	// On DOM ready...
-
-	// Set the hash to the yr.no URL we want to parse
-	// if (!location.hash) {
-	// 	location.hash =
-	// 		'https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=51.50853&lon=-0.12574&altitude=25';
-	// }
-    onMount(async () => {
-        
-        await more(Highcharts);
-        await windbarb(Highcharts);
-        const weatherRequest = await fetch('https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=32.1359004857804&lon=131.39106608149575');
-        const weatherJSON = await weatherRequest.json();
-        debugger;
-        window.meteogram = new Meteogram(weatherJSON, 'container');
-    });
+	onMount(async () => {
+		await more(Highcharts);
+		await windbarb(Highcharts);
+		    window.meteogram = new Meteogram(WeatherJSON, 'container');
+	});
 </script>
 
-<!-- <div class="container" use:highcharts={config} /> -->
 <div id="container" />

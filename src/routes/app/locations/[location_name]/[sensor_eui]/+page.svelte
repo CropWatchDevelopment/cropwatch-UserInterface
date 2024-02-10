@@ -20,7 +20,7 @@
 </script>
 
 <h1 class="text-4xl font-semibold text-slate-700 mb-4">
-	<Button icon={mdiArrowLeft} on:click={() => goto(`/app/locations/${$page.params.location_name}`)} />
+	<Button size="lg" icon={mdiArrowLeft} on:click={() => goto(`/app/locations/${$page.params.location_name}`)} />
 	CW-SS-THEPNPK
 </h1>
 
@@ -76,9 +76,9 @@
 </div>
 
 <div class="grid grid-cols-3 mt-2 gap-4 mb-2">
-	<CWStatCard title="Soil N" />
-	<CWStatCard title="Soil P" />
-	<CWStatCard title="Soil K" />
+	<CWStatCard title="Soil N(nitrogen)" />
+	<CWStatCard title="Soil P(phosphorus)" />
+	<CWStatCard title="Soil K(potassium)" />
 </div>
 
 <div class="grid grid-cols-2 mt-2 gap-4 mb-2">

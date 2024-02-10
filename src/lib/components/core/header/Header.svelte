@@ -1,9 +1,18 @@
 <script>
-	import { AppBar, Avatar, Button, Icon, MenuItem, ResponsiveMenu, Toggle } from 'svelte-ux';
-	import { mdiAccount, mdiCog, mdiDotsVertical, mdiLock } from '@mdi/js';
+	import { AppBar, Avatar, Button, Icon, Menu, MenuItem, ResponsiveMenu, Toggle } from 'svelte-ux';
+	import {
+		mdiAccount,
+		mdiBell,
+		mdiBellAlert,
+		mdiCheckCircle,
+		mdiCog,
+		mdiDotsVertical,
+		mdiLock
+	} from '@mdi/js';
 	import { goto } from '$app/navigation';
 	import { setContext, getContext } from 'svelte';
 	import { authState } from '$lib/stores/auth.store';
+	import { alertState } from '$lib/stores/alert.store';
 
 	const logout = async () => {
 		$authState?.signOut().then((error) => {
@@ -426,6 +435,24 @@
 	</div>
 
 	<div slot="actions" class="flex gap-3">
+		<Toggle let:on={open} let:toggle>
+			<Button
+				on:click={toggle}
+				icon={{
+					data: $alertState.length === 0 ? mdiBell : mdiBellAlert,
+					size: '1.5rem',
+					style: $alertState.length === 0 ? 'color:white' : 'color:#ecff06'
+				}}
+			>
+				<Menu {open} on:close={toggle}>
+					{#if $alertState.length === 0}
+						<MenuItem>
+							<Icon data={mdiCheckCircle} style="color:green;" /> No new Alerts
+						</MenuItem>
+					{/if}
+				</Menu>
+			</Button>
+		</Toggle>
 		<Toggle let:on={open} let:toggle let:toggleOff>
 			<Button on:click={toggle}>
 				<Avatar class="bg-slate-100 text-emerald-700 font-bold">
