@@ -19,29 +19,15 @@
 	import Leaflet from '$lib/components/leaflet/Leaflet.svelte';
 	import CWTable from '$lib/components/table/CWTable.svelte';
 	import L from 'leaflet';
-	import cloud from '$lib/images/cloud.png';
+    import cloud from '$lib/images/cloud.png';
 	import './cloud.css';
 	import Sunny from '$lib/components/weatherIcons/Sunny.svelte';
-	import WeatherChart from '$lib/components/charts/highcharts/weatherChart/WeatherChart.svelte';
 
 	let bounds: L.LatLngBoundsExpression | undefined = undefined;
 	let view: L.LatLngExpression | undefined = [32.14088948246444, 131.3853159103882];
 	let zoom: number | undefined = 20;
 
 	let sensorList = [{ ID: 0, Type: 'Soil Sensor', SensorName: 'CW-SS-TMEPNPK', Status: true }];
-
-	let rows = [
-		{
-			name: 'Item 1',
-			description: 'Description 1',
-			action: { type: 'button', text: '', click: () => goto(`/app/locations/${$page.params.location_name}/id`) }
-		},
-		{
-			name: 'Item 2',
-			description: 'Description 2',
-			action: { type: 'button', text: '', click: () => alert('Clicked Item 2') }
-		}
-	];
 </script>
 
 <h1 class="text-2xl font-bold border-b border-b-gray-300 mb-4">
@@ -53,18 +39,15 @@
 </h1>
 
 <div class="relative mb-4 overflow-hidden">
-	<!-- <img src={cloud} class="absolute opacity-50 z-10" style="left: 60%; top: -115%" alt="cloud1" />
-	<img
-		src={cloud}
-		class="absolute opacity-50 z-10 rotate-45"
-		style="top: 70%; left: -80px"
-		alt="cloud1"
-	/>
-	<div class="rounded-3xl bg-blue-500/50 p-10 text-white">
+    <img src={cloud} class="absolute opacity-50 z-10" style="left: 60%; top: -115%"  alt="cloud1" />
+    <img src={cloud} class="absolute opacity-50 z-10 rotate-45" style="top: 70%; left: -80px" alt="cloud1" />
+    <div class="rounded-3xl bg-blue-500/50 p-10 text-white">
 		<div>
+			<!-- <p class="text-white text-sm">Outside Weather</p> -->
 			<p class="text-white text-sm mb-5">{new Date().toLocaleTimeString()}</p>
 			<div class="grid grid-flow-row grid-cols-12 mt-1">
 				<div class="col-span-2 mb-5">
+					<!-- <div id="cloud" /> -->
 					<Sunny cloud1={true} cloud2={true} />
 				</div>
 				<div class="col-span-3">
@@ -104,8 +87,7 @@
 				</div>
 			</div>
 		</div>
-	</div> -->
-	<WeatherChart />
+	</div>
 </div>
 
 <div class="mb-4">
@@ -190,5 +172,5 @@
 
 <div class="mt-6">
 	<h2 class="font-bold mb-4">Sensor List</h2>
-	<CWTable rows={rows}></CWTable>
+	<CWTable data={sensorList}></CWTable>
 </div>

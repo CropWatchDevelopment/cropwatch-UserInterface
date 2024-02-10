@@ -1,26 +1,15 @@
 <script>
 	import { AppBar, Avatar, Button, Icon, MenuItem, ResponsiveMenu, Toggle } from 'svelte-ux';
-	import {
-		mdiAccount,
-		mdiAccountCircle,
-		mdiBell,
-		mdiCalendar,
-		mdiClock,
-		mdiCog,
-		mdiDotsVertical,
-		mdiGithub,
-		mdiHome,
-		mdiLock,
-		mdiPin,
-		mdiTwitter
-	} from '@mdi/js';
+	import { mdiAccount, mdiCog, mdiDotsVertical, mdiLock } from '@mdi/js';
 	import { goto } from '$app/navigation';
-	import { supabase } from '$lib/supabaseClient';
+	import { setContext, getContext } from 'svelte';
+	import { authState } from '$lib/stores/auth.store';
 
 	const logout = async () => {
-		await supabase.auth.signOut();
-		goto('/auth/login');
-	}
+		$authState?.signOut().then((error) => {
+			goto('/auth/login');
+		});
+	};
 </script>
 
 <AppBar class="bg-emerald-700 text-white elevation-10">

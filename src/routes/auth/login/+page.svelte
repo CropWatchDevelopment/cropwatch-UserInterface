@@ -4,9 +4,12 @@
 	import { Button, Switch, TextField, Tooltip } from 'svelte-ux';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms/client';
-
+	
 	export let data: PageData;
-	$: console.log(data);
+	let { supabase } = data;
+	$: ({ supabase } = data);
+	let email: string = '';
+	let password: string = '';
 
 	// Client API:
 	const { form } = superForm(data.form, {
@@ -14,6 +17,18 @@
 			debugger;
 		}
 	});
+
+	const handleSignIn = async () => {
+		const { data, error } = await supabase.auth.signInWithPassword({
+			email,
+			password
+		});
+		if (!error) {
+			goto('/app/locations');
+		} else {
+			alert(error);
+		}
+	};
 
 	let loggingIn: boolean = false;
 
@@ -47,7 +62,7 @@
 								id="email"
 								name="email"
 								type="email"
-								value={data.authCookie.email}
+								bind:value={email}
 								autocomplete="email"
 								required
 								on:change={(e) => console.log(e.detail)}
@@ -66,7 +81,7 @@
 								placeholder="****************"
 								name="password"
 								type="password"
-								value={data.authCookie.password}
+								bind:value={password}
 								autocomplete="current-password"
 								required
 							/>
@@ -79,7 +94,7 @@
 								<Switch
 									name="rememberMe"
 									disabled
-									value={data.authCookie.rememberMe}
+									
 									classes={{
 										switch: 'bg-white border-gray-400 data-[checked=true]:bg-blue-600',
 										toggle: 'data-[checked=false]:bg-blue-600 data-[checked=true]:bg-white'
@@ -105,7 +120,8 @@
 							}}
 							disabled={loggingIn}
 							loading={loggingIn}
-							type="submit"
+							type="button"
+							on:click={() => handleSignIn()}
 							class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 							>Login</Button
 						>

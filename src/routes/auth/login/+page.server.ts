@@ -12,12 +12,10 @@ const schema = z.object({
   rememberMe: z.boolean(),
 });
 
-export const load = (async ({ cookies }) => {
-  const authCookie = cookies.get('au');
-  console.log(authCookie);
+export const load = (async (locals: {  }) => {
 
   return {
-    authCookie: JSON.parse(authCookie),
+    data: {}
   };
 }) satisfies LayoutServerLoad;
 

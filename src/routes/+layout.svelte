@@ -1,5 +1,7 @@
+<!-- src/routes/+layout.svelte -->
 <script lang="ts">
-	import { invalidate } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
+	import { authState } from '$lib/stores/auth.store.js';
 	import { onMount } from 'svelte';
 
 	export let data;
@@ -11,6 +13,14 @@
 		const {
 			data: { subscription }
 		} = supabase.auth.onAuthStateChange((event, _session) => {
+			console.log('auth state change', event);
+			if (event == 'SIGNED_OUT') {
+				authState.set(null);
+				goto('/auth/login');
+			}
+			if (event == 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
+				authState.set(data.supabase.auth)
+			}
 			if (_session?.expires_at !== session?.expires_at) {
 				invalidate('supabase:auth');
 			}

@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { mdiArrowRight } from '@mdi/js';
+	import { filter } from 'd3';
 	import { createEventDispatcher } from 'svelte';
-	import { Pagination, paginationStore } from 'svelte-ux';
-	export let data: [] = [];
+	import { Button, Icon, Pagination, paginationStore } from 'svelte-ux';
+	export let rows: [] = [];
 
 	const dispatch = createEventDispatcher();
 	const onHover = (row) => {
@@ -14,7 +16,7 @@
 	pagination.setTotal(100);
 
 	// Extract headers from the first row (if it exists)
-	let headers = data.length > 0 ? Object.keys(data[0]) : [];
+	let headers = rows.length > 0 ? Object.keys(rows[0]) : [];
 </script>
 
 <table class={`${$$props.class}`}>
@@ -26,10 +28,16 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each data as row}
+		{#each rows as row}
 			<tr on:mousemove={(e) => onHover(row)}>
-				{#each headers as header}
-					<td class="break" data-label={header}>{row[header]}</td>
+				{#each Object.keys(row) as key}
+					<td>
+						{#if typeof row[key] === 'object' && row[key].type === 'button'}
+							<Button variant="fill" icon={mdiArrowRight} on:click={row[key].click}>{row[key].text}</Button>
+						{:else}
+							{row[key]}
+						{/if}
+					</td>
 				{/each}
 			</tr>
 		{/each}
