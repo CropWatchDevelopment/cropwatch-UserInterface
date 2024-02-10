@@ -5,25 +5,6 @@
     import more from 'highcharts/highcharts-more';
 	import weatherData from './weather.json';
 	import { onMount } from 'svelte';
-	/**
-	 * This is a complex demo of how to set up a Highcharts chart, coupled to a
-	 * dynamic source and extended by drawing image sprites, wind arrow paths
-	 * and a second grid on top of the chart. The purpose of the demo is to inpire
-	 * developers to go beyond the basic chart types and show how the library can
-	 * be extended programmatically. This is what the demo does:
-	 *
-	 * - Loads weather forecast from www.yr.no in form of a JSON service.
-	 * - When the data arrives async, a Meteogram instance is created. We have
-	 *   created the Meteogram prototype to provide an organized structure of the
-	 *   different methods and subroutines associated with the demo.
-	 * - The parseYrData method parses the data from www.yr.no into several parallel
-	 *   arrays. These arrays are used directly as the data option for temperature,
-	 *   precipitation and air pressure.
-	 * - After this, the options structure is built, and the chart generated with
-	 *   the parsed data.
-	 * - On chart load, weather icons and the frames for the wind arrows are
-	 *   rendered using custom logic.
-	 */
 
 	function Meteogram(json, container) {
 		// Parallel arrays for the chart data, these are populated as the JSON file
@@ -691,7 +672,10 @@
         
         await more(Highcharts);
         await windbarb(Highcharts);
-        window.meteogram = new Meteogram(weatherData, 'container');
+        const weatherRequest = await fetch('https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=32.1359004857804&lon=131.39106608149575');
+        const weatherJSON = await weatherRequest.json();
+        debugger;
+        window.meteogram = new Meteogram(weatherJSON, 'container');
     });
 </script>
 
