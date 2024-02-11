@@ -5,7 +5,7 @@
 	import Sidebar from '$lib/components/core/Sidebar.svelte';
 </script>
 
-<AppLayout classes={{ root: 'bg-gray-50 ' }} areas="'header header' 'aside main'">
+<AppLayout classes={{ root: 'bg-gray-100 ' }} areas="'header header' 'aside main'">
 	<nav slot="nav" class="h-full bg-gray-200">
 		<Sidebar />
 	</nav>

@@ -7,9 +7,12 @@
 	export let view: L.LatLngExpression | undefined = undefined;
 	export let zoom: number | undefined = undefined;
 	export let disableZoom: boolean = false;
+	export let width: number = 100;
+	export let height: number = 100;
 
 	let map: L.Map | undefined;
 	let mapElement: HTMLDivElement;
+
 
 	onMount(() => {
 		map = L.map(mapElement);
@@ -45,7 +48,7 @@
 	}
 </script>
 
-<div class="relative w-full h-full" bind:this={mapElement}>
+<div class="relative" style={`width: ${width}px; height: ${height}px;`} bind:this={mapElement}>
 	{#if map}
 		<slot />
 	{/if}
