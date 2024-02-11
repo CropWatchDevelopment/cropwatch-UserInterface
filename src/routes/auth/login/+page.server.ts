@@ -12,7 +12,7 @@ const schema = z.object({
   rememberMe: z.boolean(),
 });
 
-export const load = (async (locals: {  }) => {
+export const load = (async (locals: { }) => {
 
   return {
     data: {}

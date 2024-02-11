@@ -4,51 +4,55 @@
 	import CWStatCard from '$lib/components/stat-card/CWStatCard.svelte';
 	import LineChart from '$lib/components/charts/highcharts/lineChart/LineChart.svelte';
 	import { Card, Duration, Header } from 'svelte-ux';
+	import { sensorDataState } from '$lib/stores/CW-SS-TMEPNPK';
 
+	$: console.log('sensor data', $sensorDataState.map(vals => [new Date(vals.created_at), vals.soil_moisture]));
+	$: latest = $sensorDataState.at(0);
+	$: latestCollected_Time = latest?.created_at;
 </script>
 
 <div class="grid grid-cols-2 mt-10 gap-4 mb-2">
-	<CWStatCard title="Temperature" value={20.00} optimal={24.33} notation="°c" />
-	<CWStatCard title="Moisture" value={28} optimal={25} notation="%"  />
+	<CWStatCard title="Temperature" value={$sensorDataState.at(0)?.soil_temperatureC} optimal={24.33} notation="°c" counterStartTime={latestCollected_Time} />
+	<CWStatCard title="Moisture" value={$sensorDataState.at(0)?.soil_moisture} optimal={25} notation="%" counterStartTime={latestCollected_Time} />
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
 	<Card>
 		<Header title={'Soil Temperature'} slot="header" class="gap-0">
 			<div slot="subheading">
-				Last Update <Duration start={subSeconds(new Date(), 0)} totalUnits={1} /> ago
+				Last Update <Duration start={subSeconds(latestCollected_Time, 0)} totalUnits={1} /> ago
 			</div>
 		</Header>
-		<LineChart />
+		<LineChart seriesData={$sensorDataState.map(vals => { return {x: Math.floor(new Date(vals.created_at).getTime()/1000.0), y: vals.soil_temperatureC}})} />
 	</Card>
 	<Card>
 		<Header title={'Soil Moisture'} slot="header" class="gap-0">
 			<div slot="subheading">
-				Last Update <Duration start={subSeconds(new Date(), 0)} totalUnits={1} /> ago
+				Last Update <Duration start={subSeconds(latestCollected_Time, 0)} totalUnits={1} /> ago
 			</div>
 		</Header>
 		<div class="flex flex-row">
-			<LineChart />
+			<LineChart seriesData={$sensorDataState.map(vals => [new Date(vals.created_at), vals.soil_moisture])}  />
 		</div>
 	</Card>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-3 mt-2 gap-4 mb-2">
-	<CWStatCard title="Soil N" value={28} optimal={25} notation="mg/kg"   />
-	<CWStatCard title="Soil P" value={28} optimal={25} notation="mg/kg"   />
-	<CWStatCard title="Soil K" value={28} optimal={25} notation="mg/kg"   />
+	<CWStatCard title="Soil N" value={$sensorDataState.at(0)?.soil_N} optimal={25} notation="mg/kg" counterStartTime={latestCollected_Time} />
+	<CWStatCard title="Soil P" value={$sensorDataState.at(0)?.soil_P} optimal={25} notation="mg/kg" counterStartTime={latestCollected_Time} />
+	<CWStatCard title="Soil K" value={$sensorDataState.at(0)?.soil_K} optimal={25} notation="mg/kg" counterStartTime={latestCollected_Time} />
 </div>
 
 <div class="grid grid-cols-2 mt-2 gap-4 mb-2">
-	<CWStatCard title="Soil pH" value={5.6} optimal={5.6} notation="pH"   />
-	<CWStatCard title="Soil EC" value={1300} optimal={1300} notation="µs/cm"   />
+	<CWStatCard title="Soil pH" value={$sensorDataState.at(0)?.soil_PH} optimal={5.6} notation="pH" counterStartTime={latestCollected_Time} />
+	<CWStatCard title="Soil EC" value={$sensorDataState.at(0)?.soil_EC} optimal={1300} notation="µs/cm" counterStartTime={latestCollected_Time} />
 </div>
 
 <Card>
 	<Header title={'Soil Temperature'} slot="header" class="gap-0">
 		<div slot="subheading">
-			Last Update <Duration start={subSeconds(new Date(), 0)} totalUnits={1} /> ago
+			Last Update <Duration start={subSeconds(latestCollected_Time, 0)} totalUnits={1} /> ago
 		</div>
 	</Header>
-	<RadarChart N={10} P={33} K={50} EC={150} PH={5.7} />
+	<RadarChart N={$sensorDataState.at(0)?.soil_N} P={$sensorDataState.at(0)?.soil_P} K={$sensorDataState.at(0)?.soil_K} EC={$sensorDataState.at(0)?.soil_EC} PH={$sensorDataState.at(0)?.soil_PH} />
 </Card>

@@ -3,70 +3,56 @@
 
 	import { page } from '$app/stores';
 	import {
-		mdiArrowLeft,
 		mdiChevronLeft,
-		mdiChevronRight,
-		mdiCloud,
-		mdiCloudPercent,
 		mdiDotsVertical,
-		mdiLandFields,
-		mdiMap,
+		mdiEye,
 		mdiMapMarker,
-		mdiMarker,
-		mdiMoleculeCo2,
-		mdiTestTube,
-		mdiThermometer,
-		mdiWater,
-		mdiWateringCanOutline,
-		mdiWavesArrowUp,
+		mdiPlus,
 		mdiWeatherSunny
 	} from '@mdi/js';
 	import {
 		Avatar,
 		Button,
 		Card,
-		Duration,
 		Header,
 		Icon,
-		ListItem,
-		ProgressCircle
+		Menu,
+		MenuItem,
+		ProgressCircle,
+
+		Toggle
+
 	} from 'svelte-ux';
 	import Leaflet from '$lib/components/leaflet/Leaflet.svelte';
-	import CWTable from '$lib/components/table/CWTable.svelte';
 	import L from 'leaflet';
 	import './cloud.css';
 	import Sunny from '$lib/components/weatherIcons/Sunny.svelte';
 	import WeatherChart from '$lib/components/charts/highcharts/weatherChart/WeatherChart.svelte';
-	import type { PageData } from '../$types';
-	import { subSeconds } from 'date-fns';
-	import CWStatCard from '$lib/components/stat-card/CWStatCard.svelte';
+	import Marker from '$lib/components/leaflet/Marker.svelte';
+	import WeatherWidget from '$lib/components/weatherWidget/WeatherWidget.svelte';
 
 	let bounds: L.LatLngBoundsExpression | undefined = undefined;
 	let view: L.LatLngExpression | undefined = [32.14088948246444, 131.3853159103882];
 	let zoom: number | undefined = 20;
 	let mapWidth: number = 100;
 	let mapHeight: number = 100;
+	let mapPopupOpen: boolean = false;
 
-	let sensorList = [{ ID: 0, Type: 'Soil Sensor', SensorName: 'CW-SS-TMEPNPK', Status: true }];
-
-	export let data;
-
-	let rows = [
+	let sensors = [
 		{
-			name: 'Item 1',
-			description: 'Description 1',
-			action: {
-				type: 'button',
-				text: '',
-				click: () => goto(`/app/locations/${$page.params.location_name}/id`)
+			ID: 0,
+			Type: 'Soil Sensor',
+			SensorName: 'CW-SS-TMEPNPK',
+			Status: true,
+			lat: 32.14098326096874,
+			lng: 131.38520548442474,
+			latest: {
+				temp: 23
 			}
-		},
-		{
-			name: 'Item 2',
-			description: 'Description 2',
-			action: { type: 'button', text: '', click: () => alert('Clicked Item 2') }
 		}
 	];
+
+	export let data;
 </script>
 
 <h1 class="text-4xl font-semibold text-slate-700 mb-4">
@@ -75,13 +61,11 @@
 		size="lg"
 		on:click={() => goto(`/app/locations/${$page.params.location_name}`)}
 	/>
-	{$page.params.location_name} Green House
+	{$page.params.location_name}
 </h1>
 
-<div class="relative grid grid-cols-1 md:grid-cols-2 my-2 gap-4">
-	<CWStatCard title="Outside Temperature" value={14.7} optimal={20} notation="°c" icon={mdiThermometer} />
-	<CWStatCard title="Humidity" value={60} optimal={34} notation="%" icon={mdiCloud} />
-</div>
+
+<WeatherWidget />
 
 <Card class="my-2">
 	<Header slot="header" class="gap-0">
@@ -117,10 +101,50 @@
 			</Avatar>
 		</div>
 		<div slot="actions">
-			<Button icon={mdiDotsVertical} />
+			<Toggle let:on={open} let:toggle>
+				<Button icon={mdiDotsVertical} on:click={toggle}>
+				  <Menu {open} on:close={toggle}>
+					<MenuItem icon={mdiPlus}>Add Device</MenuItem>
+				  </Menu>
+				</Button>
+			  </Toggle>
 		</div>
 	</Header>
-	<div class="w-full min-h-96" slot="contents" bind:offsetHeight={mapHeight} bind:offsetWidth={mapWidth}>
-		<Leaflet {view} {zoom} disableZoom={true} width={mapWidth} height={mapHeight}></Leaflet>
+
+	<div
+		class="w-full min-h-96"
+		slot="contents"
+		bind:offsetHeight={mapHeight}
+		bind:offsetWidth={mapWidth}
+	>
+		<Leaflet {view} {zoom} disableZoom={true} width={mapWidth} height={mapHeight}>
+			{#each sensors as sensor}
+				<Marker
+					latLng={[sensor.lat, sensor.lng]}
+					width={40}
+					height={40}
+					bind:popupOpen={mapPopupOpen}
+				>
+					<Icon data={mdiMapMarker} classes={{ root: 'text-red-900' }} />
+					<div slot="popup">
+						<Card>
+							<Header slot="header" class="gap-0">
+								<div slot="title" class="text-nowrap text-xl font-medium">{sensor.SensorName}</div>
+								<div slot="avatar">
+									<Avatar class="bg-accent-500 text-white font-bold mr-4">SS</Avatar>
+								</div>
+							</Header>
+							<div slot="contents" class="grid grid-cols-2">
+								
+							</div>
+							<div slot="actions">
+								<Button variant="fill" on:click={() => mapPopupOpen = false}>Close</Button>
+								<Button variant="fill-light" color="blue" icon={mdiEye} on:click={() => goto(`/app/locations/${$page.params.location_name}/${sensor.id}`)}>View Details</Button>
+							</div>
+						</Card>
+					</div>
+				</Marker>
+			{/each}
+		</Leaflet>
 	</div>
 </Card>

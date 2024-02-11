@@ -3,8 +3,8 @@
 	export let N: number = 0;
 	export let P: number = 0;
 	export let K: number = 0;
-	export let EC: number = 0;
-	export let PH: number = 0;
+	// export let EC: number = 0;
+	// export let PH: number = 0;
 	export let label: string = '';
 
 	const config = {
@@ -23,7 +23,7 @@
 		},
 
 		xAxis: {
-			categories: ['pH', 'EC', 'N', 'P', 'K'],
+			categories: ['N', 'K', 'P'],
 			tickmarkPlacement: 'on',
 			lineWidth: 0
 		},
@@ -36,13 +36,13 @@
 
 		tooltip: {
 			shared: true,
-			pointFormat: '<span style="color:{series.color}">{series.name}: <b>${point.y:,.0f}</b><br/>'
+			pointFormat: '<span style="color:{series.color}">{series.name}: <b>{point.y:,.0f}</b><br/>'
 		},
 
 		series: [
 			{
 				name: 'Current Values',
-				data: [PH, EC, N, P, K],
+				data: [N, K, P],
 				pointPlacement: 'on'
 			}
 		],

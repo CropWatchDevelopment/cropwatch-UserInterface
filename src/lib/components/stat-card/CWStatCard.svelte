@@ -17,7 +17,7 @@
 	export let value: number = 0.0;
 	export let optimal: number = value;
 	export let notation: string = '°c';
-	export let icon;
+	export let icon: any = null;
 </script>
 
 <Card>

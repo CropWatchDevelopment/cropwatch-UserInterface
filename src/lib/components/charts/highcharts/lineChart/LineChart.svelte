@@ -1,6 +1,8 @@
 <script lang="ts">
 	import highcharts from '$lib/components/charts/highcharts/highcharts-action';
 
+	export let seriesData: number[] = [];
+
 	let config = {
 		chart: {
 			height: 200,
@@ -27,14 +29,14 @@
 				label: {
 					connectorAllowed: false
 				},
-				pointStart: 2010
+				// pointStart: 2010
 			}
 		},
 
 		series: [
 			{
 				name: '',
-				data: [8,9,10,11,14,18,22,25,20,15,12,6,4,3,2,1,-4,0,3,5,9]
+				data: [...seriesData]
 			}
 		],
 

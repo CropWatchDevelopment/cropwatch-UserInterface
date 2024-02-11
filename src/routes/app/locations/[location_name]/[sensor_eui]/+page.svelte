@@ -10,6 +10,8 @@
 	import Notifications from './notifications/Notifications.svelte';
 	import Settings from './settings/Settings.svelte';
 	import Permissions from './permissions/Permissions.svelte';
+	import { sensorDataState } from '$lib/stores/CW-SS-TMEPNPK';
+	import { subSeconds } from 'date-fns';
 
 	let userAvailableTabs = [
 		{ label: 'Dashboard', value: 1 },
@@ -20,6 +22,11 @@
 		{ label: 'Permissions', value: 6 }
 	];
 	let currentTab: number = 1;
+
+	export let data;
+
+	$: console.log('page data', data.sensor.data);
+	$: sensorDataState.set(data.sensor.error ? [] : data.sensor.data);
 </script>
 
 <h1 class="text-4xl font-semibold text-slate-700 mb-4">
@@ -39,7 +46,7 @@
 
 	<div class="flex flex-col">
 		<p class="mb-1 text-gray-600">Last Update</p>
-		<p class="text-sm">{new Date().toLocaleTimeString()}</p>
+		<p class="text-sm">{new Date(data.sensor.data?.at(0).created_at).toLocaleTimeString()} <small>(<Duration start={subSeconds(data.sensor.data?.at(0).created_at, 0)} totalUnits={1} /> ago)</small></p>
 	</div>
 
 	<div class="flex flex-col">
