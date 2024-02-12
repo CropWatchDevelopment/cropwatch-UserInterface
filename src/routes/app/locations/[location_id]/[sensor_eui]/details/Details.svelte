@@ -55,5 +55,5 @@
 			Last Update <Duration start={subSeconds(latestCollected_Time, 0)} totalUnits={1} /> ago
 		</div>
 	</Header>
-	<RadarChart N={$sensorDataState.at(0)?.soil_N} P={$sensorDataState.at(0)?.soil_P} K={$sensorDataState.at(0)?.soil_K} EC={$sensorDataState.at(0)?.soil_EC} PH={$sensorDataState.at(0)?.soil_PH} />
+	<RadarChart N={$sensorDataState.at(0)?.soil_N} P={$sensorDataState.at(0)?.soil_P} K={$sensorDataState.at(0)?.soil_K} />
 </Card>

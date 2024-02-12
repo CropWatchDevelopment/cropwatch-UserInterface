@@ -1,32 +1,64 @@
 <script lang="ts">
-	import { mdiChevronRight, mdiMapMarker, mdiPlus } from '@mdi/js';
-	import { Button, ListItem, Icon, Card } from 'svelte-ux';
-	import Leaflet from '$lib/components/leaflet/Leaflet.svelte';
-	import L from 'leaflet';
+	import { mdiChevronRight, mdiDotsVertical, mdiMapMarker, mdiMapSearch, mdiPlus } from '@mdi/js';
+	import {
+		Button,
+		ListItem,
+		Icon,
+		Card,
+		Header,
+		Avatar,
+		Toggle,
+		Menu,
+		MenuItem,
+		ProgressCircle
+	} from 'svelte-ux';
 	import { goto } from '$app/navigation';
+	import type { PageData } from './$types';
 
-	let bounds: L.LatLngBoundsExpression | undefined = undefined;
-	let view: L.LatLngExpression | undefined = [32.14088948246444, 131.3853159103882];
+	export let data: PageData;
+
 	let zoom: number | undefined = 20;
 </script>
 
-<div class="grid grid-rows-12 h-full">
-	<h1 class="row-span-1 text-2xl font-bold">All Locations</h1>
-	<div class="grid row-span-11 grid-cols-7 gap-4 h-full">
-		<div id="map" class="grid grid-flow-row col-span-5">
-			<Leaflet {view} {zoom}></Leaflet>
+<Card id="list" class="grid-flow-row col-span-2 mr-4 justify-start" title="Location List">
+	<Header title="Your Locations" slot="header" class="gap-0">
+		<div slot="avatar">
+			<Avatar class="bg-accent-500 text-white font-bold mr-4">
+				<Icon data={mdiMapSearch} />
+			</Avatar>
 		</div>
-		<Card id="list" class="grid-flow-row col-span-2 justify-start" title="Location List">
-			<ol>
-				<ListItem title="Location Name">
-					<div slot="subheading">
-						<Icon data={mdiMapMarker} /> Saito
-					</div>
-					<div slot="actions">
-						<Button icon={mdiChevronRight} class="p-2 text-black/50" on:click={() => goto('locations/saito')} />
-					</div>
-				</ListItem>
-			</ol>
-		</Card>
+		<div slot="actions">
+			<Toggle let:on={open} let:toggle>
+				<Button icon={mdiDotsVertical} on:click={toggle}>
+					<Menu {open} on:close={toggle}>
+						<MenuItem icon={mdiPlus}>Add Location</MenuItem>
+					</Menu>
+				</Button>
+			</Toggle>
+		</div>
+	</Header>
+	<div slot="contents">
+		<ol>
+			{#await data.locations.data}
+				<ProgressCircle />
+			{:then locations}
+				{#each locations as location}
+					<ListItem title={location.cw_locations.name}>
+						<div slot="avatar">
+							<Icon data={mdiMapMarker} />
+						</div>
+						<div slot="actions">
+							<Button
+								icon={mdiChevronRight}
+								variant="fill-light"
+								color="accent"
+								class="p-2 text-black/50"
+								on:click={() => goto(`locations/${location.cw_locations.location_id}`)}
+							/>
+						</div>
+					</ListItem>
+				{/each}
+			{/await}
+		</ol>
 	</div>
-</div>
+</Card>

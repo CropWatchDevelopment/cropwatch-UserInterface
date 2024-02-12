@@ -29,13 +29,14 @@
 	$: sensorDataState.set(data.sensor.error ? [] : data.sensor.data);
 </script>
 
-<h1 class="text-4xl font-semibold text-slate-700 mb-4">
+<h1 class="flex flex-row text-4xl font-semibold text-slate-700 mb-4">
+	<p>
 	<Button
 		size="lg"
 		icon={mdiArrowLeft}
 		on:click={() => goto(`/app/locations/${$page.params.location_name}`)}
 	/>
-	CW-SS-THEPNPK
+	CW-SS-THEPNPK</p>
 </h1>
 
 <div class="grid grid-cols-3 grid-flow-row my-4">

@@ -31,7 +31,6 @@
 	import Marker from '$lib/components/leaflet/Marker.svelte';
 	import WeatherWidget from '$lib/components/weatherWidget/WeatherWidget.svelte';
 
-	let bounds: L.LatLngBoundsExpression | undefined = undefined;
 	let view: L.LatLngExpression | undefined = [32.14088948246444, 131.3853159103882];
 	let zoom: number | undefined = 20;
 	let mapWidth: number = 100;
@@ -53,15 +52,20 @@
 	];
 
 	export let data;
+	$: console.log(data);
 </script>
 
 <h1 class="text-4xl font-semibold text-slate-700 mb-4">
 	<Button
 		icon={mdiChevronLeft}
 		size="lg"
-		on:click={() => goto(`/app/locations/${$page.params.location_name}`)}
+		on:click={() => goto(`/app/locations`)}
 	/>
-	{$page.params.location_name}
+	{#await data.location}
+		<ProgressCircle />
+	{:then location} 
+		{location.name}
+	{/await}
 </h1>
 
 

@@ -1,7 +1,9 @@
 
 /** @type {import('./$types').PageLoad} */
-export async function load({ params }) {
+export async function load({ params, locals: { supabase, getSession } }) {
+    let session = await getSession();
     return {
+            locations: await supabase.from('cw_location_owners').select(`*, cw_locations(*)`).eq('user_id', session?.user.id),
             weatherJSON: await getWeatherAPIData(),
     };
 }
