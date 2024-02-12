@@ -19,9 +19,7 @@
 		},
 
 		xAxis: {
-			accessibility: {
-				rangeDescription: 'Range: 2010 to 2020'
-			}
+			type: 'datetime',
 		},
 
 		plotOptions: {
@@ -29,7 +27,6 @@
 				label: {
 					connectorAllowed: false
 				},
-				// pointStart: 2010
 			}
 		},
 

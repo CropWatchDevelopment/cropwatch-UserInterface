@@ -5,6 +5,7 @@
 	import LineChart from '$lib/components/charts/highcharts/lineChart/LineChart.svelte';
 	import { Card, Duration, Header } from 'svelte-ux';
 	import { sensorDataState } from '$lib/stores/CW-SS-TMEPNPK';
+	import { mdiBeaker, mdiShaker, mdiThermometer, mdiWater } from '@mdi/js';
 
 	$: console.log('sensor data', $sensorDataState.map(vals => [new Date(vals.created_at), vals.soil_moisture]));
 	$: latest = $sensorDataState.at(0);
@@ -12,8 +13,8 @@
 </script>
 
 <div class="grid grid-cols-2 mt-10 gap-4 mb-2">
-	<CWStatCard title="Temperature" value={$sensorDataState.at(0)?.soil_temperatureC} optimal={24.33} notation="°c" counterStartTime={latestCollected_Time} />
-	<CWStatCard title="Moisture" value={$sensorDataState.at(0)?.soil_moisture} optimal={25} notation="%" counterStartTime={latestCollected_Time} />
+	<CWStatCard icon={mdiThermometer} title="Temperature" value={$sensorDataState.at(0)?.soil_temperatureC} optimal={24.33} notation="°c" counterStartTime={latestCollected_Time} />
+	<CWStatCard icon={mdiWater} title="Moisture" value={$sensorDataState.at(0)?.soil_moisture} optimal={25} notation="%" counterStartTime={latestCollected_Time} />
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
@@ -32,7 +33,7 @@
 			</div>
 		</Header>
 		<div class="flex flex-row">
-			<LineChart seriesData={$sensorDataState.map(vals => [new Date(vals.created_at), vals.soil_moisture])}  />
+			<LineChart seriesData={$sensorDataState.map(vals => { return {x: Math.floor(new Date(vals.created_at).getTime()/1000.0), y: vals.soil_moisture}})}  />
 		</div>
 	</Card>
 </div>
@@ -44,8 +45,8 @@
 </div>
 
 <div class="grid grid-cols-2 mt-2 gap-4 mb-2">
-	<CWStatCard title="Soil pH" value={$sensorDataState.at(0)?.soil_PH} optimal={5.6} notation="pH" counterStartTime={latestCollected_Time} />
-	<CWStatCard title="Soil EC" value={$sensorDataState.at(0)?.soil_EC} optimal={1300} notation="µs/cm" counterStartTime={latestCollected_Time} />
+	<CWStatCard icon={mdiBeaker} title="Soil pH" value={$sensorDataState.at(0)?.soil_PH} optimal={5.6} notation="pH" counterStartTime={latestCollected_Time} />
+	<CWStatCard icon={mdiShaker} title="Soil EC" value={$sensorDataState.at(0)?.soil_EC} optimal={1300} notation="µs/cm" counterStartTime={latestCollected_Time} />
 </div>
 
 <Card>
