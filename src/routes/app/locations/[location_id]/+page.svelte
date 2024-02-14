@@ -19,57 +19,35 @@
 		Menu,
 		MenuItem,
 		ProgressCircle,
-
 		Toggle
-
 	} from 'svelte-ux';
 	import Leaflet from '$lib/components/leaflet/Leaflet.svelte';
 	import L from 'leaflet';
 	import './cloud.css';
-	import Sunny from '$lib/components/weatherIcons/Sunny.svelte';
 	import WeatherChart from '$lib/components/charts/highcharts/weatherChart/WeatherChart.svelte';
 	import Marker from '$lib/components/leaflet/Marker.svelte';
 	import WeatherWidget from '$lib/components/weatherWidget/WeatherWidget.svelte';
-
+	
+	export let data;
 	let view: L.LatLngExpression | undefined = [32.14088948246444, 131.3853159103882];
 	let zoom: number | undefined = 20;
 	let mapWidth: number = 100;
 	let mapHeight: number = 100;
 	let mapPopupOpen: boolean = false;
 
-	let sensors = [
-		{
-			ID: 0,
-			Type: 'Soil Sensor',
-			SensorName: 'CW-SS-TMEPNPK',
-			Status: true,
-			lat: 32.14098326096874,
-			lng: 131.38520548442474,
-			latest: {
-				temp: 23
-			}
-		}
-	];
-
-	export let data;
 	$: console.log(data);
 </script>
 
 <h1 class="text-4xl font-semibold text-slate-700 mb-4">
-	<Button
-		icon={mdiChevronLeft}
-		size="lg"
-		on:click={() => goto(`/app/locations`)}
-	/>
+	<Button icon={mdiChevronLeft} size="lg" on:click={() => goto(`/app/locations`)} />
 	{#await data.location}
 		<ProgressCircle />
-	{:then location} 
+	{:then location}
 		{location.name}
 	{/await}
 </h1>
 
-
-<WeatherWidget />
+<!-- <WeatherWidget /> -->
 
 <Card class="my-2">
 	<Header slot="header" class="gap-0">
@@ -107,11 +85,11 @@
 		<div slot="actions">
 			<Toggle let:on={open} let:toggle>
 				<Button icon={mdiDotsVertical} on:click={toggle}>
-				  <Menu {open} on:close={toggle}>
-					<MenuItem icon={mdiPlus}>Add Device</MenuItem>
-				  </Menu>
+					<Menu {open} on:close={toggle}>
+						<MenuItem icon={mdiPlus}>Add Device</MenuItem>
+					</Menu>
 				</Button>
-			  </Toggle>
+			</Toggle>
 		</div>
 	</Header>
 
@@ -122,33 +100,44 @@
 		bind:offsetWidth={mapWidth}
 	>
 		<Leaflet {view} {zoom} disableZoom={true} width={mapWidth} height={mapHeight}>
-			{#each sensors as sensor}
-				<Marker
-					latLng={[sensor.lat, sensor.lng]}
-					width={40}
-					height={40}
-					bind:popupOpen={mapPopupOpen}
-				>
-					<Icon data={mdiMapMarker} classes={{ root: 'text-red-900' }} />
-					<div slot="popup">
-						<Card>
-							<Header slot="header" class="gap-0">
-								<div slot="title" class="text-nowrap text-xl font-medium">{sensor.SensorName}</div>
-								<div slot="avatar">
-									<Avatar class="bg-accent-500 text-white font-bold mr-4">SS</Avatar>
+			{#await data.sensors}
+				<ProgressCircle />
+			{:then sensors}
+				{#each sensors as sensor}
+					<Marker
+						latLng={[sensor.cw_devices.lat, sensor.cw_devices.long]}
+						width={40}
+						height={40}
+						bind:popupOpen={mapPopupOpen}
+					>
+						<Icon data={mdiMapMarker} classes={{ root: 'text-red-900' }} />
+						<div slot="popup">
+							<Card>
+								<Header slot="header" class="gap-0">
+									<div slot="title" class="text-nowrap text-xl font-medium">
+										{sensor.cw_devices.name}
+									</div>
+									<div slot="avatar">
+										<Avatar class="bg-accent-500 text-white font-bold mr-4">SS</Avatar>
+									</div>
+								</Header>
+								<div slot="contents" class="grid grid-cols-2"></div>
+								<div slot="actions">
+									<Button variant="fill" on:click={() => (mapPopupOpen = false)}>Close</Button>
+									<Button
+										variant="fill-light"
+										color="blue"
+										icon={mdiEye}
+										on:click={() =>
+											goto(`/app/locations/${$page.params.location_name}/${sensor.dev_eui}`)}
+										>View Details</Button
+									>
 								</div>
-							</Header>
-							<div slot="contents" class="grid grid-cols-2">
-								
-							</div>
-							<div slot="actions">
-								<Button variant="fill" on:click={() => mapPopupOpen = false}>Close</Button>
-								<Button variant="fill-light" color="blue" icon={mdiEye} on:click={() => goto(`/app/locations/${$page.params.location_name}/${sensor.id}`)}>View Details</Button>
-							</div>
-						</Card>
-					</div>
-				</Marker>
-			{/each}
+							</Card>
+						</div>
+					</Marker>
+				{/each}
+			{/await}
 		</Leaflet>
 	</div>
 </Card>
