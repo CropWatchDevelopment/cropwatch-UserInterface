@@ -40,6 +40,12 @@ dependencies:
     version: 1.1.0
 
 devDependencies:
+  '@event-calendar/core':
+    specifier: ^2.6.1
+    version: 2.6.1
+  '@event-calendar/time-grid':
+    specifier: ^2.6.1
+    version: 2.6.1
   '@fontsource/fira-mono':
     specifier: ^4.5.10
     version: 4.5.10
@@ -593,6 +599,19 @@ packages:
   /@eslint/js@8.56.0:
     resolution: {integrity: sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dev: true
+
+  /@event-calendar/core@2.6.1:
+    resolution: {integrity: sha512-3dxMnmFfjEzeyNFhm0PS04/Js3LqqQC6HzqY6XtypxC2wLFhxrK4NqX4cq8ZKtIrTJu6EFFB3DZ8GamW28Pl7g==}
+    dependencies:
+      svelte: 4.2.9
+    dev: true
+
+  /@event-calendar/time-grid@2.6.1:
+    resolution: {integrity: sha512-YSy2sJlpu7ZR7l+/c4DO/LpyZ+1+i357mXwth/i3gBew+bNQvWdMpiaYX05gNR5DokbXx3ZNYcbnXFPLVVvBDw==}
+    dependencies:
+      '@event-calendar/core': 2.6.1
+      svelte: 4.2.9
     dev: true
 
   /@floating-ui/core@1.6.0:

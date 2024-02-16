@@ -36,6 +36,8 @@
 	let mapPopupOpen: boolean = false;
 
 	$: console.log(data);
+	view = [data.location.latitude, data.location.longitude]
+
 </script>
 
 <h1 class="text-4xl font-semibold text-slate-700 mb-4">
@@ -51,7 +53,7 @@
 
 <Card class="my-2">
 	<Header slot="header" class="gap-0">
-		<div slot="title" class="text-nowrap text-xl font-medium">Overview Map</div>
+		<div slot="title" class="text-nowrap text-xl font-medium">Weather</div>
 		<div slot="avatar">
 			<Avatar class="bg-accent-500 text-white font-bold mr-4">
 				<Icon data={mdiWeatherSunny} />
