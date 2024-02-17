@@ -11,7 +11,7 @@
 	export let disableZoom: boolean = false;
 	export let width: number = 100;
 	export let height: number = 100;
-	// export let sensorLatLngs: [number, number, number] | [] = [];
+	export let heatMapLatLngs: IHeatMapPoint[] = [];
 
 	let map: L.Map | undefined;
 	let mapElement: HTMLDivElement;
@@ -24,15 +24,16 @@
 		}).addTo(map);
 
 		//Heatmap layer
-		var heat = L.heatLayer([[32.14098326096874, 131.38520548442474, 0.8]], { radius: 25 }).addTo(map);
-		
+		var heat = L.heatLayer(heatMapLatLngs, { radius: 25 }).addTo(map); // [[32.14098326096874, 131.38520548442474, 0.8]]
 
 		if (disableZoom) {
+			map.dragging.disable();
 			map.touchZoom.disable();
 			map.doubleClickZoom.disable();
 			map.scrollWheelZoom.disable();
 			map.boxZoom.disable();
 			map.keyboard.disable();
+			if (map.tap) map.tap.disable();
 		}
 	});
 

@@ -15,7 +15,7 @@
 	export let title: string = 'New Card';
 	export let counterStartTime: Date = new Date();
 	export let value: number = 0.0;
-	export let optimal: number = value;
+	export let optimal: number | null = value;
 	export let notation: string = '°c';
 	export let icon: any = null;
 </script>
@@ -38,23 +38,24 @@
 		</div>
 	</Header>
 	<div slot="contents" class="mb-2">
-		<Collapse>
-			<div slot="trigger" class="flex-1 px-3 py-3 border-t">
-				<h1 class="text-4xl text-gray-700">{value}{notation}</h1>
-			</div>
-			<div class="grid grid-cols-2 text-center">
-				<div class="border-t border-r">
-					<h3 class="font-medium">Optimal</h3>
-					<p class="text-gray-700">{optimal}{notation}</p>
+		{#if optimal}
+			<Collapse>
+				<div slot="trigger" class="flex-1 px-3 py-3 border-t">
+					<h1 class="text-4xl text-gray-700">{value}{notation}</h1>
 				</div>
-				<div class="border-t">
-					<h3 class="font-medium">Difference</h3>
-					<p class="text-gray-700">{(value - optimal).toFixed(2)}{notation}</p>
+				<div class="grid grid-cols-2 text-center">
+					<div class="border-t border-r">
+						<h3 class="font-medium">Optimal</h3>
+						<p class="text-gray-700">{optimal}{notation}</p>
+					</div>
+					<div class="border-t">
+						<h3 class="font-medium">Difference</h3>
+						<p class="text-gray-700">{(value - optimal).toFixed(2)}{notation}</p>
+					</div>
 				</div>
-			</div>
-		</Collapse>
+			</Collapse>
+		{:else}
+			<h1 class="text-4xl text-gray-700">{value}{notation}</h1>
+		{/if}
 	</div>
-	<!-- <div slot="actions">
-		
-	</div> -->
 </Card>

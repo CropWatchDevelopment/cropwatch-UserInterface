@@ -1,5 +1,12 @@
 <script lang="ts">
-	import { mdiChevronRight, mdiDotsVertical, mdiMapMarker, mdiMapSearch, mdiPlus } from '@mdi/js';
+	import {
+		mdiCalendar,
+		mdiChevronRight,
+		mdiDotsVertical,
+		mdiMapMarker,
+		mdiMapSearch,
+		mdiPlus
+	} from '@mdi/js';
 	import {
 		Button,
 		ListItem,
@@ -18,6 +25,7 @@
 	export let data: PageData;
 
 	let zoom: number | undefined = 20;
+
 </script>
 
 <Card id="list" class="grid-flow-row col-span-2 mr-4 justify-start" title="Location List">
@@ -62,3 +70,4 @@
 		</ol>
 	</div>
 </Card>
+

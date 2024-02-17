@@ -12,26 +12,10 @@
     $: data = $sensorDataState;
 </script>
 
-<h2>History list</h2>
+<div class="m-4">
+	<h2>History list</h2>
 
-<Card>
-	<Header title="Title" subheading="Subheading" slot="header">
-		<div slot="actions">
-			<Toggle let:on={open} let:toggle>
-				<Button icon={mdiDotsVertical} on:click={toggle}>
-					<Menu {open} on:close={toggle}>
-						<MenuItem icon={mdiDownload}>Download CSV</MenuItem>
-					</Menu>
-				</Button>
-			</Toggle>
-		</div>
-		<div slot="avatar">
-			<Avatar class="bg-accent-500 text-white font-bold">
-				<Icon data={mdiHistory} />
-			</Avatar>
-		</div>
-	</Header>
-	<div slot="contents">
+	<ol class="mt-2">
 		<DateRangeField bind:value={selectedDateRange} stepper icon={mdiCalendarRange} />
 
         <ol>
@@ -39,5 +23,5 @@
                 <ListItem title={uplink.soil_temperatureC} subheading="Subheading" />
             {/each}
         </ol>
-	</div>
-</Card>
+	</ol>
+</div>

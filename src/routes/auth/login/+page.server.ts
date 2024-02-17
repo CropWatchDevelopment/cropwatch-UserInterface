@@ -1,16 +1,7 @@
-import { z } from 'zod';
 import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
 import { dev } from '$app/environment';
-import type { LayoutServerLoad } from './$types';
 import { supabase } from '$lib/supabaseClient';
 import type { SignInWithPasswordCredentials } from '@supabase/supabase-js';
-
-const schema = z.object({
-  password: z.string().min(6),
-  email: z.string().email(),
-  rememberMe: z.boolean(),
-});
 
 export const load = (async (locals: { }) => {
 

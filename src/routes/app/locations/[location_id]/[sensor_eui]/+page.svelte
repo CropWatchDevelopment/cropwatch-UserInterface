@@ -31,12 +31,13 @@
 
 <h1 class="flex flex-row text-4xl font-semibold text-slate-700 mb-4">
 	<p>
-	<Button
-		size="lg"
-		icon={mdiArrowLeft}
-		on:click={() => goto(`/app/locations/${$page.params.location_name}`)}
-	/>
-	CW-SS-THEPNPK</p>
+		<Button
+			size="lg"
+			icon={mdiArrowLeft}
+			on:click={() => goto(`/app/locations/${$page.params.location_id}`)}
+		/>
+		CW-SS-THEPNPK
+	</p>
 </h1>
 
 <div class="grid grid-cols-3 grid-flow-row my-4">
@@ -47,7 +48,12 @@
 
 	<div class="flex flex-col">
 		<p class="mb-1 text-gray-600">Last Update</p>
-		<p class="text-sm">{new Date(data.sensor.data?.at(0).created_at).toLocaleTimeString()} <small>(<Duration start={subSeconds(data.sensor.data?.at(0).created_at, 0)} totalUnits={1} /> ago)</small></p>
+		<p class="text-sm">
+			{new Date(data.sensor.data?.at(0).created_at).toLocaleTimeString()}
+			<small
+				>(<Duration start={subSeconds(data.sensor.data?.at(0).created_at, 0)} totalUnits={1} /> ago)</small
+			>
+		</p>
 	</div>
 
 	<div class="flex flex-col">
@@ -58,7 +64,14 @@
 	</div>
 </div>
 
-<Tabs options={userAvailableTabs} bind:value={currentTab}>
+<Tabs
+	options={userAvailableTabs}
+	bind:value={currentTab}
+	classes={{
+		content: 'border px-4 py-2 rounded-b rounded-tr',
+		tab: { root: 'rounded-t' }
+	}}
+>
 	<svelte:fragment slot="content" let:value>
 		{#if value === 1}
 			<Details />
@@ -68,9 +81,9 @@
 			<Rules />
 		{:else if value === 4}
 			<Notifications />
-			{:else if value === 5}
+		{:else if value === 5}
 			<Settings />
-			{:else if value === 6}
+		{:else if value === 6}
 			<Permissions />
 		{/if}
 	</svelte:fragment>

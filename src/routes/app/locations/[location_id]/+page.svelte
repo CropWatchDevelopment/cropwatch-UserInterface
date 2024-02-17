@@ -3,11 +3,15 @@
 
 	import { page } from '$app/stores';
 	import {
+		mdiCalendar,
 		mdiChevronLeft,
 		mdiDotsVertical,
 		mdiEye,
+		mdiMagnifyScan,
 		mdiMapMarker,
 		mdiPlus,
+		mdiThermometer,
+		mdiWater,
 		mdiWeatherSunny
 	} from '@mdi/js';
 	import {
@@ -27,7 +31,10 @@
 	import WeatherChart from '$lib/components/charts/highcharts/weatherChart/WeatherChart.svelte';
 	import Marker from '$lib/components/leaflet/Marker.svelte';
 	import WeatherWidget from '$lib/components/weatherWidget/WeatherWidget.svelte';
-	
+	import CwStatCard from '$lib/components/stat-card/CWStatCard.svelte';
+	import Calendar from '@event-calendar/core';
+	import TimeGrid from '@event-calendar/day-grid';
+
 	export let data;
 	let view: L.LatLngExpression | undefined = [32.14088948246444, 131.3853159103882];
 	let zoom: number | undefined = 20;
@@ -35,22 +42,37 @@
 	let mapHeight: number = 100;
 	let mapPopupOpen: boolean = false;
 
-	$: console.log(data);
-	view = [data.location.latitude, data.location.longitude]
+	let plugins = [TimeGrid];
+	let options = {
+		view: 'dayGridMonth',
+		date: new Date(),
+		events: [],
+		locale: 'ja-jp'
+	};
+	options.events.push({
+		id: 'a',
+		title: `Rainfall Total: 34mm`,
+		editable: false,
+		allDay: true,
+		backgroundColor: '#a90f0f',
+		start: new Date(),
+		end: new Date()
+	});
 
+	$: console.log(data);
+	view = [data.location.latitude, data.location.longitude];
 </script>
 
-<h1 class="text-4xl font-semibold text-slate-700 mb-4">
+<h1 class="flex flex-row text-4xl font-semibold text-slate-700 mb-4">
 	<Button icon={mdiChevronLeft} size="lg" on:click={() => goto(`/app/locations`)} />
 	{#await data.location}
 		<ProgressCircle />
 	{:then location}
-		{location.name}
+		<p class="my-auto">{location.name}</p>
 	{/await}
 </h1>
 
 <!-- <WeatherWidget /> -->
-
 <Card class="my-2">
 	<Header slot="header" class="gap-0">
 		<div slot="title" class="text-nowrap text-xl font-medium">Weather</div>
@@ -76,7 +98,7 @@
 	</div>
 </Card>
 
-<Card>
+<Card class="my-2">
 	<Header slot="header" class="gap-0">
 		<div slot="title" class="text-nowrap text-xl font-medium">Overview Map</div>
 		<div slot="avatar">
@@ -101,7 +123,18 @@
 		bind:offsetHeight={mapHeight}
 		bind:offsetWidth={mapWidth}
 	>
-		<Leaflet {view} {zoom} disableZoom={true} width={mapWidth} height={mapHeight}>
+		<Leaflet
+			{view}
+			{zoom}
+			disableZoom={true}
+			width={mapWidth}
+			height={mapHeight}
+			heatMapLatLngs={data.sensors?.map((s) => [
+				s.cw_devices.lat,
+				s.cw_devices.long,
+				s.cw_devices.cw_ss_tmepnpk[0].soil_temperatureC
+			])}
+		>
 			{#await data.sensors}
 				<ProgressCircle />
 			{:then sensors}
@@ -120,10 +153,28 @@
 										{sensor.cw_devices.name}
 									</div>
 									<div slot="avatar">
-										<Avatar class="bg-accent-500 text-white font-bold mr-4">SS</Avatar>
+										<Avatar class="bg-accent-500 text-white font-bold mr-4">
+											<Icon data={mdiMagnifyScan} />
+										</Avatar>
 									</div>
 								</Header>
-								<div slot="contents" class="grid grid-cols-2"></div>
+								<div slot="contents" class="grid grid-cols-2 gap-2">
+									<CwStatCard
+										title="Temperature"
+										icon={mdiThermometer}
+										value={sensor.cw_devices.cw_ss_tmepnpk[0].soil_temperatureC}
+										optimal={null}
+										counterStartTime={sensor.cw_devices.cw_ss_tmepnpk[0].created_at}
+									/>
+									<CwStatCard
+										title="Moisture"
+										icon={mdiWater}
+										value={sensor.cw_devices.cw_ss_tmepnpk[0].soil_moisture}
+										notation="%"
+										optimal={null}
+										counterStartTime={sensor.cw_devices.cw_ss_tmepnpk[0].created_at}
+									/>
+								</div>
 								<div slot="actions">
 									<Button variant="fill" on:click={() => (mapPopupOpen = false)}>Close</Button>
 									<Button
@@ -131,7 +182,7 @@
 										color="blue"
 										icon={mdiEye}
 										on:click={() =>
-											goto(`/app/locations/${$page.params.location_name}/${sensor.dev_eui}`)}
+											goto(`/app/locations/${$page.params.location_id}/${sensor.dev_eui}`)}
 										>View Details</Button
 									>
 								</div>
@@ -141,5 +192,27 @@
 				{/each}
 			{/await}
 		</Leaflet>
+	</div>
+</Card>
+
+<Card id="list" class="grid-flow-row col-span-2 justify-start my-2" title="Location List">
+	<Header title="Your Locations" slot="header" class="gap-0">
+		<div slot="avatar">
+			<Avatar class="bg-accent-500 text-white font-bold mr-4">
+				<Icon data={mdiCalendar} />
+			</Avatar>
+		</div>
+		<div slot="actions">
+			<Toggle let:on={open} let:toggle>
+				<Button icon={mdiDotsVertical} on:click={toggle}>
+					<Menu {open} on:close={toggle}>
+						<MenuItem icon={mdiPlus}>Add Event</MenuItem>
+					</Menu>
+				</Button>
+			</Toggle>
+		</div>
+	</Header>
+	<div slot="contents">
+		<Calendar {plugins} {options} />
 	</div>
 </Card>
