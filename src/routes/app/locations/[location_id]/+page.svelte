@@ -72,7 +72,12 @@
 	{/await}
 </h1>
 
-<!-- <WeatherWidget /> -->
+<div class="grid grid-cols-3 gap-2">
+	<CwStatCard title='Anomalous Sensors' counterStartTime={null} value={0} notation=" Problems" />
+	<CwStatCard title='Outdoor Temp' counterStartTime={null} value={14} optimal={null} />
+	<CwStatCard title='Outdoor Humidity' counterStartTime={null} value={34} notation="%" optimal={null} />
+</div>
+
 <Card class="my-2">
 	<Header slot="header" class="gap-0">
 		<div slot="title" class="text-nowrap text-xl font-medium">Weather</div>

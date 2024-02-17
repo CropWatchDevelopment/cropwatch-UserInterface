@@ -13,7 +13,7 @@
 	} from 'svelte-ux';
 
 	export let title: string = 'New Card';
-	export let counterStartTime: Date = new Date();
+	export let counterStartTime: Date | null = new Date();
 	export let value: number = 0.0;
 	export let optimal: number | null = value;
 	export let notation: string = '°c';
@@ -31,7 +31,9 @@
 			</Avatar>
 		</div>
 		<div slot="subheading" class="text-sm text-gray-500">
-			Last Update <Duration start={subSeconds(counterStartTime, 0)} totalUnits={1} /> ago
+			{#if counterStartTime}
+				Last Update <Duration start={subSeconds(counterStartTime, 0)} totalUnits={1} /> ago
+			{/if}
 		</div>
 		<div slot="actions">
 			<Button icon={mdiDotsVertical} />
